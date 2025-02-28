@@ -159,10 +159,11 @@ def add_article():
         connection = news_db_connection()
         # form data from the user
         title = request.form['title']
+        author = request.form['author']
         description = request.form['description']
         link = request.form['article_link']
         # adds the data to the articles table 
-        connection.execute('''INSERT INTO articles (title, description, article_link) VALUES (?, ?, ?)''', (title, description, link))
+        connection.execute('''INSERT INTO articles (title, author, description, article_link) VALUES (?, ?, ?, ?)''', (title, author, description, link))
         # saves the changes
         connection.commit()
         # closes database connection
@@ -179,10 +180,11 @@ def edit_article(id):
     if request.method == "POST":
         # form data from user
         title = request.form['title']
+        author = request.form['author']
         description = request.form['description']
         link = request.form['article_link']
         # updates data from specified id in the articles table
-        connection.execute('''UPDATE articles SET title = ?, description = ?, article_link = ? WHERE id = ?''', (title, description, link, id))
+        connection.execute('''UPDATE articles SET title = ?, author = ?, description = ?, article_link = ? WHERE id = ?''', (title, author, description, link, id))
         # commit the changes
         connection.commit()
         # close database connection
