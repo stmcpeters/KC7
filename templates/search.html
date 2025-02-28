@@ -7,6 +7,7 @@
   <thead class="text-2xl font-serif bg-gray-600 text-white">
     <tr>
       <th>Title</th>
+      <th>Author(s)</th>
       <th>Description</th>
       <th colspan="2">Actions</th>
     </tr>
@@ -15,6 +16,7 @@
     {% for data in items_on_page %}
       <tr>
         <td class="p-10"><a class="underline" href="https://www.nytimes.com/{{ data.article_link }}">{{ data.title }}</a></td>
+        <td class="p-10 cursor-default">{{ data.author }}</td>
         <td class="p-10 cursor-default">{{ data.description }}</td>
         <td><button type="button" class="p-5 m-10 bg-green-800 text-white border cursor-pointer hover:bg-grey-700 rounded"><a href="/edit/{{ data.id }}">Edit</a></button></td>
         <td><button type="button" class="p-5 m-10 bg-red-600 text-white cursor-pointer hover:bg-grey-700 border rounded"><a href="/delete/{{ data.id }}">Delete</a></button></td>
