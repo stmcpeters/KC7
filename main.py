@@ -142,6 +142,7 @@ try:
   # message in console to confirm database data has been fetched
   print(f'database data has been fetched: {result}')
 
+
 ############# error handling ###############
 # error handling for HTTP requests
 except requests.exceptions.RequestException as e:
