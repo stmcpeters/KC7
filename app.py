@@ -219,10 +219,18 @@ def search():
     if request.method == 'POST':
         # opens the database connection
         connection = news_db_connection()
+        # create a cursor object to execute SQL queries
+        cursor = connection.cursor()
+        # drop table if it already exists
+        cursor.execute('DROP TABLE IF EXISTS articles_fts')
+        # create virtual table for FTS5
+        create_vtable = connection.execute('''CREATE VIRTUAL TABLE articles_fts USING FTS5(title, author, description, article_link)''')
+        # insert data into virtual table
+        insert_data = connection.execute('''INSERT INTO articles_fts SELECT title, author, description, article_link FROM articles''')
         # form data from the user (search query)
         search = request.form['search']
-        # searches the data from the articles table with the specified title
-        data = connection.execute('''SELECT * FROM articles WHERE title LIKE ?''', ('%' + search + '%',)).fetchall()
+        # searches the data from the articles table using FTS5 MATCH and returns any matches
+        data = connection.execute('''SELECT * FROM articles_fts WHERE articles_fts MATCH ?''', (search,)).fetchall()
         # pagination for search results data
         page = int(request.form.get('page', 1))
         per_page = 2
