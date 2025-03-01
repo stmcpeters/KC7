@@ -229,8 +229,8 @@ def search():
         insert_data = connection.execute('''INSERT INTO articles_fts SELECT title, author, description, article_link FROM articles''')
         # form data from the user (search query)
         search = request.form['search']
-        # searches the data from the articles table using FTS5 MATCH and returns any matches
-        data = connection.execute('''SELECT * FROM articles_fts WHERE articles_fts MATCH ?''', (search,)).fetchall()
+        # searches the data from the articles table using FTS5 MATCH and returns any matches to titles in the database
+        data = connection.execute('''SELECT * FROM articles_fts WHERE titles MATCH ?''', (search,)).fetchall()
         # pagination for search results data
         page = int(request.form.get('page', 1))
         per_page = 2
@@ -245,6 +245,36 @@ def search():
     else:
         return render_template('search.html')
     
+@app.route('/advanced_search', methods=['GET', 'POST'])
+def advanced_search():
+    if request.method == 'POST':
+        # opens the database connection
+        connection = news_db_connection()
+        # create a cursor object to execute SQL queries
+        cursor = connection.cursor()
+        # drop table if it already exists
+        cursor.execute('DROP TABLE IF EXISTS articles_fts')
+        # create virtual table for FTS5
+        create_vtable = connection.execute('''CREATE VIRTUAL TABLE articles_fts USING FTS5(title, author, description, article_link)''')
+        # insert data into virtual table
+        insert_data = connection.execute('''INSERT INTO articles_fts SELECT title, author, description, article_link FROM articles''')
+        # form data from the user (search query)
+        search = request.form['search']
+        # advanced search query using FTS5 MATCH with multiple conditions (title AND description)
+        data = connection.execute('''SELECT * FROM articles_fts WHERE articles_fts MATCH ? AND description MATCH ?''', (search, search)).fetchall()
+        # pagination for search results data
+        page = int(request.form.get('page', 1))
+        per_page = 2
+        start = (page - 1) * per_page
+        end = start + per_page
+        total_pages = (len(data) + per_page - 1) // per_page
+        items_on_page = data[start:end]
+        # closes database connection
+        connection.close()
+        # renders the advanced_search.html page
+        return render_template('advanced_search.html', data=data, total_pages=total_pages, page=page, items_on_page=items_on_page, search=search)
+    else:
+        return render_template('advanced_search.html')
 
 # convert article database data into CSV file
 @app.route('/export')
