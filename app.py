@@ -74,7 +74,7 @@ def ratelimit_error(e):
 
 # use a route decorator to create a route redirecting to the google login page
 @app.route('/login')
-@limiter.limit("5 per minute") # limits to 5 req/min
+@limiter.limit("15 per minute") # limits to 15 req/min
 def login():
     google = oauth.create_client('google')
     redirect_uri = url_for('authorize', _external=True)
@@ -83,7 +83,7 @@ def login():
 
 # use a route decorator to create a route for redirecting after successful login
 @app.route('/authorize')
-@limiter.limit("5 per minute") # limits to 5 req/min
+@limiter.limit("15 per minute") # limits to 15 req/min
 def authorize():
     google = oauth.create_client('google')
     token = google.authorize_access_token()
@@ -98,7 +98,7 @@ def authorize():
 
 # starter page
 @app.route('/')
-@limiter.limit("5 per minute") # limits to 5 req/min
+@limiter.limit("15 per minute") # limits to 15 req/min
 def home():
     return render_template('home.html', SITE_KEY=SITE_KEY)
 
@@ -131,7 +131,7 @@ def jokes_db_connection():
 # login_required makes sure user auth is successful before showing data
 @login_required
 @app.route('/index', methods=['GET'])
-@limiter.limit("5 per minute") # limits to 5 req/min
+@limiter.limit("15 per minute") # limits to 15 req/min
 def index():
     # get the session email
     email = dict(session).get('email', None)
@@ -230,7 +230,7 @@ def search():
         # form data from the user (search query)
         search = request.form['search']
         # searches the data from the articles table using FTS5 MATCH and returns any matches to titles in the database
-        data = connection.execute('''SELECT * FROM articles_fts WHERE titles MATCH ?''', (search,)).fetchall()
+        data = connection.execute('''SELECT * FROM articles_fts WHERE title MATCH ?''', (search,)).fetchall()
         # pagination for search results data
         page = int(request.form.get('page', 1))
         per_page = 2
