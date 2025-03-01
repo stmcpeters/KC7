@@ -1,5 +1,5 @@
 # import Flask from flask to create the app
-from flask import Flask, render_template, request, redirect, url_for, session, render_template_string
+from flask import Flask, render_template, request, redirect, url_for, session, render_template_string, send_file
 # import Limiter from flask_limiter to limit the number of requests
 from flask_limiter import Limiter
 # import get_remote_address from flask_limiter.util to get the user's IP address
@@ -249,14 +249,16 @@ def export_data():
     connection = news_db_connection()
     # fetch data from articles table
     data = connection.execute('''SELECT * FROM articles''').fetchall()
-    # write data to CSV file
-    with open("articles.csv", "w", newline="", encoding="utf-8") as f:
+    # create path to CSV file
+    csv_file_path = os.path.join(os.getcwd(), "articles.csv")
+    # write database data to CSV file
+    with open(csv_file_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
+        writer.writerow(['ID', 'Title', 'Author(s)', 'Description', 'Article Link'])
         writer.writerows(data)
-    dirpath = os.getcwd() + "/articles.csv"
-    print(f"Data exported successfully into {dirpath}")
-    # return to index.html
-    return redirect(url_for('index'))
+    print(f"Data exported successfully to {csv_file_path}")
+    # return csv to be downloaded by user
+    return send_file(csv_file_path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
