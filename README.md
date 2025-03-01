@@ -5,9 +5,8 @@ This project is a Python-based web application built with Flask that scrapes tre
 
 ### Demo
 
-https://github.com/user-attachments/assets/fd701b35-88ed-4a96-8e49-e1d9f913d69e
 
-
+https://github.com/user-attachments/assets/e3d835a8-f3a9-4762-ad87-736d8cf1ebd4
 
 
 
@@ -20,8 +19,11 @@ https://github.com/user-attachments/assets/fd701b35-88ed-4a96-8e49-e1d9f913d69e
 - Rate Limiting: Implements rate limiting to prevent excessive requests and ensure fair usage.
 - Google OAuth: Enables users to sign in using Google for a seamless authentication experience.
 - Google reCAPTCHA: Adds an extra layer of security to prevent bot access.
-- Search Functionality: Allows users to search for specific articles within the scraped database.
+- Basic Search Functionality: Allows users to search for specific articles within the scraped database.
+- Advanced Search Functionality: Allows users to search for specific articles matching multiple conditions (title AND description) within the scraped database.
 - Pagination: Implements pagination for better navigation through articles.
+- Data Export: Allows users to download a CSV file with the news article data scraped.
+
 
 ### Technologies Used
 - Python
@@ -34,6 +36,7 @@ https://github.com/user-attachments/assets/fd701b35-88ed-4a96-8e49-e1d9f913d69e
 - Flask-Limiter (for rate limiting)
 - OAuthlib (for Google OAuth integration)
 - Google reCAPTCHA
+- FTS5 (Full-Text Search)
 
 ### Installation Instructions
 #### Prerequisites 
