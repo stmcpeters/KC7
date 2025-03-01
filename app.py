@@ -14,6 +14,8 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 # import os module to access environment variables
 import os
+# import csv
+import csv
 
 # load environment variables from .env file
 # assign the environment variables to variables to be used
@@ -234,6 +236,27 @@ def search():
         return render_template('search.html', data=data, total_pages=total_pages, page=page, items_on_page=items_on_page, search=search)
     else:
         return render_template('search.html')
+    
+
+# convert article database data into CSV file
+@app.route('/export')
+def export_data():
+    # create connection to sqlite database
+    connection = sqlite3.connect('tech_news.db')
+    # create a cursor object to execute SQL queries
+    cursor = connection.cursor()
+    # opens connection to database
+    connection = news_db_connection()
+    # fetch data from articles table
+    data = connection.execute('''SELECT * FROM articles''').fetchall()
+    # write data to CSV file
+    with open("articles.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
+    dirpath = os.getcwd() + "/articles.csv"
+    print(f"Data exported successfully into {dirpath}")
+    # return to index.html
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
