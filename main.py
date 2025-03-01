@@ -10,74 +10,74 @@ url = 'https://www.nytimes.com/section/technology'
 api_url = 'https://official-joke-api.appspot.com/jokes/programming/ten'
 
 ################## fetching and storing data from jokes API ##################
-# try:
-#   # uses requests module to make a HTTP request to the API
-#   api_response = requests.get(api_url)
-#   # checks to see that the connection is 200
-#   if api_response.status_code == requests.codes.ok:
-#       # parses the response received from API into json
-#       jokes = api_response.json()
-#       # list comprehension to select all the values of 'setup' from each dictionary within jokes 
-#       setups = [joke['setup'] for joke in jokes]
-#       # list comprehension to select all the values of 'setup' from each dictionary within jokes
-#       punchlines = [joke['punchline'] for joke in jokes]
+try:
+  # uses requests module to make a HTTP request to the API
+  api_response = requests.get(api_url)
+  # checks to see that the connection is 200
+  if api_response.status_code == requests.codes.ok:
+      # parses the response received from API into json
+      jokes = api_response.json()
+      # list comprehension to select all the values of 'setup' from each dictionary within jokes 
+      setups = [joke['setup'] for joke in jokes]
+      # list comprehension to select all the values of 'setup' from each dictionary within jokes
+      punchlines = [joke['punchline'] for joke in jokes]
 
-#       # create connection to the database
-#       conn = sqlite3.connect('jokes_api.db')
-#       # cursor to execute SQL queries
-#       c = conn.cursor()
+      # create connection to the database
+      conn = sqlite3.connect('jokes_api.db')
+      # cursor to execute SQL queries
+      c = conn.cursor()
 
-#       # drop table if it already exists
-#       c.execute('''DROP TABLE IF EXISTS tech_jokes''')
+      # drop table if it already exists
+      c.execute('''DROP TABLE IF EXISTS tech_jokes''')
 
-#       # create tech_jokes table schema
-#       jokes_table = '''CREATE TABLE tech_jokes(
-#                 id INTEGER PRIMARY KEY,
-#                 setup TEXT,
-#                 punchline TEXT
-#                 )'''
+      # create tech_jokes table schema
+      jokes_table = '''CREATE TABLE tech_jokes(
+                id INTEGER PRIMARY KEY,
+                setup TEXT,
+                punchline TEXT
+                )'''
       
-#       # create the table
-#       c.execute(jokes_table)
-#       # message to confirm table was made
-#       print('jokes table has been created')
+      # create the table
+      c.execute(jokes_table)
+      # message to confirm table was made
+      print('jokes table has been created')
 
-#       # insert the setups and punchlines data into the tech_jokes table
-#       # zip() inserts the data in one command, best practice for matching data
-#       for setup, punchline in zip(setups, punchlines):
-#         c.execute('''INSERT INTO tech_jokes (setup, punchline) VALUES (?, ?)''', (setup, punchline))
-#       # commit the changes
-#       conn.commit()
+      # insert the setups and punchlines data into the tech_jokes table
+      # zip() inserts the data in one command, best practice for matching data
+      for setup, punchline in zip(setups, punchlines):
+        c.execute('''INSERT INTO tech_jokes (setup, punchline) VALUES (?, ?)''', (setup, punchline))
+      # commit the changes
+      conn.commit()
 
-#       # select all the data from the table
-#       c.execute('''SELECT * FROM tech_jokes''')
-#       # fetch data from the table
-#       result = c.fetchall()
-#       # prints table data
-#       print(result)
-#       # close the connection
-#       conn.close()
-#   else:
-#       print("Error:", api_response.status_code, api_response.text)
+      # select all the data from the table
+      c.execute('''SELECT * FROM tech_jokes''')
+      # fetch data from the table
+      result = c.fetchall()
+      # prints table data
+      print(result)
+      # close the connection
+      conn.close()
+  else:
+      print("Error:", api_response.status_code, api_response.text)
 
-# ############# error handling ###############
-# # error handling for HTTP requests
-# except requests.exceptions.RequestException as e:
-#   print(f'error fetching data from {url}: {e}')
+############# error handling ###############
+# error handling for HTTP requests
+except requests.exceptions.RequestException as e:
+  print(f'error fetching data from {url}: {e}')
 
-# # error handling for sqlite 
-# except sqlite3.Error as e:
-#   print(f'database error: {e}')
+# error handling for sqlite 
+except sqlite3.Error as e:
+  print(f'database error: {e}')
 
-# # catch all error handling
-# except Exception as e:
-#   print(f'an error occurred: {e}')
+# catch all error handling
+except Exception as e:
+  print(f'an error occurred: {e}')
 
-# ########### close database connection ############
-# # closes connection to database whether data is successful or error is thrown
-# finally:
-#   if 'connection' in locals():
-#     conn.close()
+########### close database connection ############
+# closes connection to database whether data is successful or error is thrown
+finally:
+  if 'connection' in locals():
+    conn.close()
 
 ##########################################################################################
 
